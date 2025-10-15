@@ -1,11 +1,11 @@
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { SessionProvider, useSession } from '@/hooks/use-session';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { SessionProvider, useSession } from '@/hooks/use-session';
 import { useEffect } from 'react';
 import { Text } from 'react-native';
+import 'react-native-reanimated';
 
 export const unstable_settings = {
   initialRouteName: '(tabs)',
@@ -36,6 +36,9 @@ function RootLayoutNav() {
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="(auth)/login" options={{ headerShown: false }} />
+      <Stack.Screen name="(auth)/signup" options={{ headerShown: false }} />
+      <Stack.Screen name="(auth)/forgot-password" options={{ headerShown: false }} />
+      <Stack.Screen name="(auth)/verify-email" options={{ headerShown: false }} />
       <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
     </Stack>
   );

@@ -2,26 +2,30 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { supabase } from '@/src/lib/supabase';
 import { BlurView } from 'expo-blur';
-import Checkbox from 'expo-checkbox';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Link } from 'expo-router';
 import { useState } from 'react';
 import { Alert, ImageBackground, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 
-export default function Login() {
+export default function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
 
-  async function signInWithEmail() {
+  async function signUpWithEmail() {
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: fullName,
+        },
+      },
     });
-
     if (error) Alert.alert(error.message);
+    else Alert.alert('Check your inbox to verify your email.');
     setLoading(false);
   }
 
@@ -33,20 +37,32 @@ export default function Login() {
     >
       <BlurView intensity={50} tint="dark" style={styles.blurContainer}>
         <ThemedView style={styles.card}>
-          <ThemedText style={styles.title}>Login</ThemedText>
-          <ThemedText style={styles.subtitle}>Welcome back please login to your account</ThemedText>
+          <ThemedText style={styles.title}>Sign Up</ThemedText>
+          <ThemedText style={styles.subtitle}>Create your account</ThemedText>
 
           <ThemedView style={styles.inputContainer}>
             <TextInput
               style={styles.input}
-              placeholder="User Name"
+              placeholder="Full Name"
+              placeholderTextColor="#ccc"
+              value={fullName}
+              onChangeText={setFullName}
+              autoCapitalize="words"
+            />
+            <ThemedText style={styles.inputIcon}>👤</ThemedText>
+          </ThemedView>
+
+          <ThemedView style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
               placeholderTextColor="#ccc"
               value={email}
               onChangeText={setEmail}
               autoCapitalize="none"
               keyboardType="email-address"
             />
-            <ThemedText style={styles.inputIcon}>👤</ThemedText>
+            <ThemedText style={styles.inputIcon}>📧</ThemedText>
           </ThemedView>
 
           <ThemedView style={styles.inputContainer}>
@@ -61,18 +77,9 @@ export default function Login() {
             <ThemedText style={styles.inputIcon}>👁️</ThemedText>
           </ThemedView>
 
-          <ThemedView style={styles.rememberMeContainer}>
-            <Checkbox
-              value={rememberMe}
-              onValueChange={setRememberMe}
-              color={rememberMe ? '#6ee7b7' : '#ccc'}
-            />
-            <ThemedText style={styles.rememberMeText}>Remember me</ThemedText>
-          </ThemedView>
-
           <TouchableOpacity
-            style={styles.loginButton}
-            onPress={signInWithEmail}
+            style={styles.signupButton}
+            onPress={signUpWithEmail}
             disabled={loading}
           >
             <LinearGradient
@@ -81,19 +88,14 @@ export default function Login() {
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
             >
-              <ThemedText style={styles.loginButtonText}>Login</ThemedText>
+              <ThemedText style={styles.signupButtonText}>Sign Up</ThemedText>
             </LinearGradient>
           </TouchableOpacity>
 
-          <ThemedView style={styles.createAccountContainer}>
-            <ThemedText style={styles.createAccountText}>Don't have an account? </ThemedText>
-            <Link href="/(auth)/signup" style={styles.createAccountLink}>Signup</Link>
+          <ThemedView style={styles.loginLinkContainer}>
+            <ThemedText style={styles.loginLinkText}>Have an account? </ThemedText>
+            <Link href="/(auth)/login" style={styles.loginLink}>Log in</Link>
           </ThemedView>
-          <TouchableOpacity style={{ marginTop: 12 }}>
-            <Link href="/(auth)/forgot-password" style={styles.forgotPasswordLink}>Forgot password?</Link>
-          </TouchableOpacity>
-
-          <ThemedText style={styles.footerText}>Created by Vanina</ThemedText>
         </ThemedView>
       </BlurView>
     </ImageBackground>
@@ -116,7 +118,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   card: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)', // Semi-transparent white for glassmorphism
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
     borderRadius: 20,
     padding: 30,
     width: '90%',
@@ -164,50 +166,33 @@ const styles = StyleSheet.create({
     color: '#eee',
     marginLeft: 10,
   },
-  rememberMeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    marginBottom: 20,
-  },
-  rememberMeText: {
-    color: '#eee',
-    marginLeft: 8,
-  },
-  loginButton: {
+  signupButton: {
     width: '100%',
     borderRadius: 10,
     overflow: 'hidden',
+    marginTop: 20,
   },
   gradient: {
     paddingVertical: 15,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  loginButtonText: {
+  signupButtonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
   },
-  createAccountContainer: {
+  loginLinkContainer: {
     flexDirection: 'row',
     marginTop: 20,
   },
-  createAccountText: {
+  loginLinkText: {
     color: '#eee',
   },
-  createAccountLink: {
-    color: '#6ee7b7', // A lighter green for the link
-    fontWeight: 'bold',
-  },
-  forgotPasswordLink: {
+  loginLink: {
     color: '#6ee7b7',
     fontWeight: 'bold',
-    alignSelf: 'center',
-  },
-  footerText: {
-    color: '#ccc',
-    fontSize: 12,
-    marginTop: 30,
   },
 });
+
+
